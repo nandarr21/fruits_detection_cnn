@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+*.pyc
+dataset/
+dataset_kaggle/
+static/uploads/*
+!static/uploads/.gitkeep

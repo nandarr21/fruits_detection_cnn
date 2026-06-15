@@ -1,8 +1,8 @@
 import shutil
 import os
 
-SOURCE = "dataset_kaggle"   # dataset asli 6 kelompok
-TARGET = "dataset"          # hasil extract untuk 2 kelompok (Segar & Busuk)
+SOURCE = "dataset_kaggle"   # folder hasil extract dataset Kaggle
+TARGET = "dataset"          # folder dataset project (sudah ada di struktur)
 
 for split in ["train", "test"]:
     segar_dir = os.path.join(TARGET, split, "Segar")

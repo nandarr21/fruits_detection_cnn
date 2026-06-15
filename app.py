@@ -12,7 +12,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 IMG_SIZE = (128, 128)
 model = load_model('model/model_buah.h5')
 
-# Urutan label 
+# Urutan label sesuai model/class_names.json -> ["Busuk", "Segar"]
 LABELS = {
     0: {"kelas": "Busuk", "status": "Tidak layak"},
     1: {"kelas": "Segar", "status": "Layak konsumsi"}

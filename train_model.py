@@ -4,9 +4,9 @@ from tensorflow.keras import layers, models
 
 IMG_SIZE = (128, 128)
 BATCH_SIZE = 32
-EPOCHS = 10
+EPOCHS = 20
 
-# Load Dataset
+# ===== Load Dataset =====
 train_ds = tf.keras.utils.image_dataset_from_directory(
     "dataset/train", image_size=IMG_SIZE, batch_size=BATCH_SIZE)
 
@@ -21,7 +21,16 @@ normalization_layer = layers.Rescaling(1. / 255)
 train_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))
 val_ds = val_ds.map(lambda x, y: (normalization_layer(x), y))
 
-# Model CNN
+# Data Augmentation ringan
+data_augmentation = tf.keras.Sequential([
+    layers.RandomFlip("horizontal"),
+    layers.RandomRotation(0.1),
+    layers.RandomZoom(0.1),
+])
+
+train_ds = train_ds.map(lambda x, y: (data_augmentation(x, training=True), y))
+
+# ===== Bangun Model CNN =====
 model = models.Sequential([
     layers.Conv2D(32, (3, 3), activation='relu', input_shape=(128, 128, 3)),
     layers.MaxPooling2D((2, 2)),
@@ -44,14 +53,23 @@ model.compile(optimizer='adam',
 
 model.summary()
 
-# Training
-history = model.fit(train_ds, validation_data=val_ds, epochs=EPOCHS)
+# Callbacks untuk mencegah overfitting dan training lebih efisien
+callbacks = [
+    tf.keras.callbacks.EarlyStopping(
+        monitor='val_accuracy', patience=5, restore_best_weights=True),
+    tf.keras.callbacks.ReduceLROnPlateau(
+        monitor='val_loss', factor=0.5, patience=3, verbose=1),
+]
 
-# Evaluasi
+# ===== Training =====
+history = model.fit(train_ds, validation_data=val_ds,
+                    epochs=EPOCHS, callbacks=callbacks)
+
+# ===== Evaluasi =====
 test_loss, test_acc = model.evaluate(val_ds)
 print(f"\nAkurasi pada data uji: {test_acc:.4f}")
 
-# Simpan Model & Label
+# ===== Simpan Model & Label =====
 model.save("model/model_buah.h5")
 
 with open("model/class_names.json", "w") as f:
