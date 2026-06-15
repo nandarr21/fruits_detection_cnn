@@ -5,3 +5,5 @@ dataset/
 dataset_kaggle/
 static/uploads/*
 !static/uploads/.gitkeep
+dataset/
+dataset_kaggle/
